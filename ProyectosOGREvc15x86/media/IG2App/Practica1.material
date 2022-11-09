@@ -1,0 +1,243 @@
+material Practica1/Nariz
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.89 0.5 0.03
+        }
+    }
+}
+material Practica1/Ombligo
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.89 0.16 0.3
+        }
+    }
+}
+material Practica1/Cuerpo
+{
+    technique
+    {
+        pass
+        {
+            /*diffuse 0.9 0.8 0.1*/
+
+            texture_unit
+            {
+                texture checker.png
+                env_map spherical
+            }
+        }
+    }
+}
+material Practica1/Cabeza
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.3 0.3 0.3
+
+            texture_unit
+            {
+                texture spotlight_image.png
+                env_map spherical
+
+                colour_op add
+            }
+        }
+    }
+}
+material Practica1/CabezaRoja
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.05 0.05
+
+            texture_unit
+            {
+                texture spotlight_image.png
+                env_map spherical
+                colour_op modulate
+            }
+        }
+    }
+}
+material Practica1/CuerpoRojo
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.05 0.05
+
+            texture_unit
+            {
+                texture checker.png
+                env_map spherical
+                colour_op modulate
+            }
+        }
+    }
+}
+material Practica1/TablaNoria
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.6 0.4 0.2
+        }
+    }
+}
+material Practica1/CajaNoria
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.5 0.5 0.5
+
+            texture_unit
+            {
+                texture BumpyMetal.jpg
+                colour_op add
+            }
+        }
+    }
+}
+material Practica1/BarrilNoria
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture BeachStones.jpg
+            }
+        }
+    }
+}
+material Practica1/Rio
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.5 0.5 0.5
+
+            texture_unit
+            {
+                texture Water02.jpg
+                colour_op add
+                scroll_anim 0.1 0.1
+            }
+        }
+    }
+}
+material Practica1/RioQuieto
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.5 0.5 0.5
+
+            texture_unit
+            {
+                texture Water02.jpg
+                colour_op add
+            }
+        }
+    }
+}
+material Practica1/Rojo
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.05 0.05
+        }
+    }
+}
+material Practica1/Naranja
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.4 0.05
+        }
+    }
+}
+material Practica1/Amarillo
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.9 0.05
+        }
+    }
+}
+material Practica1/Dirt01
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture dirt01.jpg
+            }
+        }
+    }
+}
+material Practica1/Checker
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture checker.png
+            }
+        }
+    }
+}
+material Practica1/BumpyMetalAmarillo
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0.9 0.9 0.05
+
+            texture_unit
+            {
+                texture BumpyMetal.jpg
+
+                colour_op add
+            }
+        }
+    }
+}
+material Practica1/Cian
+{
+    technique
+    {
+        pass
+        {
+            diffuse 0 1 1
+        }
+    }
+}

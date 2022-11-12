@@ -31,3 +31,8 @@ bool Plano::keyPressed(const OgreBites::KeyboardEvent& evt)
 
 	return true;
 }
+
+void Plano::changeToRock()
+{
+	plane->setMaterialName("Practica1/BarrilNoria");
+}

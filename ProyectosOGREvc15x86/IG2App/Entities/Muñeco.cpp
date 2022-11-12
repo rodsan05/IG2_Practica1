@@ -6,7 +6,7 @@ Muñeco::Muñeco(Ogre::SceneNode* node) : EntityIG(node)
 	meshCuerpo->setMaterialName("Practica1/Cuerpo");
 	
 	meshCabeza = mSM->createEntity("sphere.mesh");
-	meshCabeza->setMaterialName("Practica1/Cabeza");
+	meshCabeza->setMaterialName("Practica1/Cuerpo");
 
 	cuerpo = mNode->createChildSceneNode();
 	cuerpo->attachObject(meshCuerpo);
@@ -18,13 +18,13 @@ Muñeco::Muñeco(Ogre::SceneNode* node) : EntityIG(node)
 	cabeza->setPosition(0, 250, 0);
 	cabeza->setScale(1, 1, 1);
 
-	//Ogre::Entity* sph3 = mSM->createEntity("sphere.mesh");
-	//sph3->setMaterialName("Practica1/Nariz");
-	//Ogre::SceneNode* nariz = cabeza->createChildSceneNode();
-	//nariz->attachObject(sph3);
+	Ogre::Entity* sph3 = mSM->createEntity("sphere.mesh");
+	sph3->setMaterialName("Practica1/Nariz");
+	Ogre::SceneNode* nariz = cabeza->createChildSceneNode();
+	nariz->attachObject(sph3);
 
-	//nariz->setScale(0.05, 0.05, 0.05);
-	//nariz->setPosition(0, 0, 100);
+	nariz->setScale(0.05, 0.05, 0.05);
+	nariz->setPosition(0, 0, 100);
 
 	Ogre::Entity* sph4 = mSM->createEntity("sphere.mesh");
 	sph4->setMaterialName("Practica1/Ombligo");
@@ -41,45 +41,56 @@ Muñeco::~Muñeco()
 
 void Muñeco::frameRendered(const Ogre::FrameEvent& evt)
 {
-	
+	mAnimState->addTime(evt.timeSinceLastFrame);
 }
 
-void Muñeco::receiveEvent(EntityIG* entidad)
+void Muñeco::createAnim()
 {
-	rojo = !rojo;
+	mNode->setInitialState();
 
-	if (rojo) 
-	{
-		meshCabeza->setMaterialName("Practica1/CabezaRoja");
-		meshCuerpo->setMaterialName("Practica1/CuerpoRojo");
-	}
+	float longDesplazamiento = 360;
+	float duracion = 18;
 
-	else 
-	{
-		meshCabeza->setMaterialName("Practica1/Cabeza");
-		meshCuerpo->setMaterialName("Practica1/Cuerpo");
-	}
-}
+	Ogre::Animation* animation = mSM->createAnimation("muñecoAnim", duracion);
+	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0);
+	track->setAssociatedNode(mNode);
 
-bool Muñeco::keyPressed(const OgreBites::KeyboardEvent& evt)
-{
-	if (evt.keysym.sym == SDLK_UP)
-	{
-		mNode->translate(5, 0, 0);
-	}
-	else if (evt.keysym.sym == SDLK_DOWN)
-	{
-		mNode->translate(-5, 0, 0);
-	}
+	Ogre::Vector3 keyframePos(0, 0, 0);
+	Ogre::Real durPaso = duracion / 5.0;
 
-	if (evt.keysym.sym == SDLK_LEFT)
-	{
-		mNode->yaw(Ogre::Degree(-5));
-	}
-	else if (evt.keysym.sym == SDLK_RIGHT)
-	{
-		mNode->yaw(Ogre::Degree(5));
-	}
+	Ogre::Quaternion quat = Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3(0, 1, 0));
+	Ogre::TransformKeyFrame* kf;
+	kf = track->createNodeKeyFrame(durPaso * 0);
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
 
-	return true;
+	//quaternion para rotar de src a dest (ángulo menor)
+	quat = Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 1); // Keyframe 1: mirando a plataforma
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	kf = track->createNodeKeyFrame(durPaso * 2); // Keyframe 2: va a plataforma
+	keyframePos += Ogre::Vector3::NEGATIVE_UNIT_X * longDesplazamiento;
+	kf->setTranslate(keyframePos); // plataforma
+	kf->setRotation(quat);
+
+	quat = Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 3); // Keyframe 3: mira a origen
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	kf = track->createNodeKeyFrame(durPaso * 4); // Keyframe 4: vuelve a origen
+	keyframePos += Ogre::Vector3::UNIT_X * longDesplazamiento;
+	kf->setTranslate(keyframePos); // Origen
+	kf->setRotation(quat);
+
+	quat = Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 5); // Keyframe 5: vuelve a mirar al eje Z
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	mAnimState = mSM->createAnimationState("muñecoAnim");
+	mAnimState->setLoop(true);
+	mAnimState->setEnabled(true);
 }

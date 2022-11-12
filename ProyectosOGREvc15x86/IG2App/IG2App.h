@@ -13,7 +13,7 @@
 #include <OgreBillboardSet.h>
 #include <OgreParticleSystem.h>
 
-class Dron;
+class Plano;
 class Sinbad;
 class IG2App : public  OgreBites::IG2ApplicationContext, OgreBites::InputListener
 {
@@ -51,11 +51,11 @@ protected:
 
 	Ogre::SceneNode* avion = nullptr;
 	Ogre::SceneNode* dronNodriza = nullptr;
-	Dron* dronNod = nullptr;
 	std::vector<Ogre::SceneNode*> drones;
 	Ogre::SceneNode* planeta = nullptr;
 	Sinbad* sinbad = nullptr;
 	Sinbad* sinbadBombScene = nullptr;
+	Plano* river = nullptr;
 };
 
 #endif

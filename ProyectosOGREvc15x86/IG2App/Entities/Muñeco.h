@@ -7,9 +7,8 @@ public:
 	~Muñeco();
 
 	virtual void frameRendered(const Ogre::FrameEvent& evt) override;
-	virtual void receiveEvent(EntityIG* entidad) override;
 
-	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
+	void createAnim();
 
 protected:
 	bool rotating = false;
@@ -20,5 +19,7 @@ protected:
 	Ogre::Entity* meshCuerpo = nullptr;
 	Ogre::SceneNode* cabeza = nullptr;
 	Ogre::SceneNode* cuerpo = nullptr;
+
+	Ogre::AnimationState* mAnimState = nullptr;
 };
 

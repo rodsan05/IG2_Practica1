@@ -21,6 +21,8 @@ public:
 
 	void toggleDancing();
 
+	void createRunningPlatformsAnim(Ogre::Vector3 dest);
+
 protected:
 
 	const float ROTATION_VEL = 50;
@@ -29,6 +31,7 @@ protected:
 	Ogre::AnimationState* mAnimStateBase = nullptr;
 	Ogre::AnimationState* mAnimStateTop = nullptr;
 	Ogre::AnimationState* danceState = nullptr;
+	Ogre::AnimationState* runBetweenPlatformsAnimationState = nullptr;
 
 	Ogre::SceneNode* sinbadNode = nullptr;
 	Ogre::Entity* sinbadEntity = nullptr;

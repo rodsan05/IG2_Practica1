@@ -45,6 +45,11 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt)
 	mAnimStateBase->addTime(evt.timeSinceLastFrame);	
 	mAnimStateTop->addTime(evt.timeSinceLastFrame);
 	danceState->addTime(evt.timeSinceLastFrame);
+	
+	if (!runningAroundPlanet) 
+	{
+		runBetweenPlatformsAnimationState->addTime(evt.timeSinceLastFrame);
+	}
 
 	Ogre::Real time = evt.timeSinceLastFrame;
 
@@ -160,4 +165,62 @@ void Sinbad::toggleDancing()
 		mAnimStateTop->setEnabled(true);
 		danceState->setEnabled(false);
 	}
+}
+
+void Sinbad::createRunningPlatformsAnim(Ogre::Vector3 dest)
+{
+	mNode->setInitialState();
+	Ogre::Vector3 src(mNode->getPosition());
+	dest.y = src.y;
+	Ogre::Vector3 dir = dest - src;
+	dir.normalise();
+
+	float longDesplazamiento = src.Ogre::Vector3::distance(dest);
+	float duracion = 18;
+
+	auto angleOrigToDest = src.Ogre::Vector3::angleBetween(dest) - Ogre::Degree(35);
+
+	Ogre::Animation* animation = mSM->createAnimation("sinbadCorreEntrePlataformas" + runningAroundPlanet, duracion);
+	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0);
+	track->setAssociatedNode(mNode);
+
+	Ogre::Vector3 keyframePos(0, 0, 0);
+	Ogre::Real durPaso = duracion / 6.0;
+
+	Ogre::Quaternion quat = Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3(0, 1, 0));
+	Ogre::TransformKeyFrame* kf;
+	kf = track->createNodeKeyFrame(durPaso * 0);
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	//quaternion para rotar de src a dest (ángulo menor)
+	quat = Ogre::Quaternion(Ogre::Radian(angleOrigToDest), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 1); // Keyframe 1: mirando a plataforma
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	kf = track->createNodeKeyFrame(durPaso * 2); // Keyframe 2: va a plataforma
+	keyframePos += dir * longDesplazamiento;
+	kf->setTranslate(keyframePos); // plataforma
+	kf->setRotation(quat);
+
+	quat = Ogre::Quaternion(Ogre::Degree(180) - Ogre::Radian(angleOrigToDest), Ogre::Vector3(0, -1, 0));
+	//quat = Ogre::Quaternion(Ogre::Degree(dest.Ogre::Vector3::angleBetween(src)), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 3); // Keyframe 3: mira a origen
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	kf = track->createNodeKeyFrame(durPaso * 4); // Keyframe 4: vuelve a origen
+	keyframePos += dir * -1 * longDesplazamiento;
+	kf->setTranslate(keyframePos); // Origen
+	kf->setRotation(quat);
+
+	quat = Ogre::Quaternion(Ogre::Degree(0), Ogre::Vector3(0, 1, 0));
+	kf = track->createNodeKeyFrame(durPaso * 5); // Keyframe 5: vuelve a mirar al eje Z
+	kf->setTranslate(keyframePos);
+	kf->setRotation(quat);
+
+	runBetweenPlatformsAnimationState = mSM->createAnimationState("sinbadCorreEntrePlataformas" + runningAroundPlanet);
+	runBetweenPlatformsAnimationState->setLoop(true);
+	runBetweenPlatformsAnimationState->setEnabled(true);
 }

@@ -9,6 +9,8 @@ public:
 
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
 
+	void changeToRock();
+
 protected:
 	bool moviendose = true;
 

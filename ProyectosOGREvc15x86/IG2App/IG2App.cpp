@@ -24,39 +24,9 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	{
 		getRoot()->queueEndRendering();
 	}
-	else if (evt.keysym.sym == SDLK_g)
+	else if (evt.keysym.sym == SDLK_t)
 	{
-		mSM->getSceneNode("Clock")->roll(Degree(-5));
-	}
-	else if (evt.keysym.sym == SDLK_p)
-	{
-		sceneNode->yaw(Degree(5));
-	}
-	else if (evt.keysym.sym == SDLK_h)
-	{
-		AxisAlignedBox colliderAvion;
-		AxisAlignedBox colliderDron;
-
-		auto it = drones.begin();
-		while (it != drones.end())
-		{
-			auto dron = *it;
-
-			colliderAvion = avion->_getWorldAABB();
-			colliderDron = dron->_getWorldAABB();
-
-			if (colliderAvion.intersects(colliderDron))
-			{
-				dron->getParent()->removeChild(dron);
-				it = drones.erase(it);
-			}
-			else it++;
-		}
-
-		if (drones.size() == 0)
-		{
-			dronNod->changeColor();
-		}
+		river->changeToRock();
 	}
 
 	return true;
@@ -143,7 +113,7 @@ void IG2App::setupScene(void)
 	//mSinbadNode->showBoundingBox(true);
 
 	rio = sceneNode->createChildSceneNode();
-	Plano* river = new Plano(rio, 2160.0f * 1.5, 1600.0f, "Practica1/Rio");
+	river = new Plano(rio, 2160.0f * 1.5, 1600.0f, "Practica1/Rio");
 
 	planoRojo = sceneNode->createChildSceneNode();
 	Plano* planoRoj = new Plano(planoRojo, 2160.0f / 3, 1600.0f / 2.5, "Practica1/Rojo");
@@ -158,6 +128,9 @@ void IG2App::setupScene(void)
 	sinbadBombScene = new Sinbad(mSinbadEscenaBomba, 20, 0, false);
 	sinbadBombScene->arma();
 	mSinbadEscenaBomba->translate(-2160.0f / 3, 1 + 5 * 20, 1600.0f / 3.35);
+	
+	auto posPlatRoja = planoRojo->getPosition();
+	sinbadBombScene->createRunningPlatformsAnim(posPlatRoja);
 
 	noria = sceneNode->createChildSceneNode();
 	Noria* n = new Noria(noria, 15, 20, 2);
@@ -172,17 +145,15 @@ void IG2App::setupScene(void)
 	bomba = sceneNode->createChildSceneNode();
 	Bomba* bomb = new Bomba(bomba, 20);
 
-	/*noria = plano->createChildSceneNode();
-	Noria* n = new Noria(noria, 10, 10, 1.5);
-
-	muñeco = plano->createChildSceneNode();
+	muñeco = sceneNode->createChildSceneNode();
 	Muñeco* m = new Muñeco(muñeco);
 
-	muñeco->setPosition(600, 200, 600);
-	muñeco->yaw(Degree(225));*/
+	muñeco->translate(2160/2.5, 100, -300);
+	muñeco->setScale(0.5 * Vector3(1));
+	m->createAnim();
 
-	/*addInputListener(n);
-	addInputListener(m);*/
+	addInputListener(n);
+	addInputListener(m);
 	addInputListener(river);
 	addInputListener(bomb);
 	addInputListener(sinbadBombScene);

@@ -24,13 +24,13 @@ material Practica1/Cuerpo
     {
         pass
         {
-            /*diffuse 0.9 0.8 0.1*/
+            diffuse 0.9 0.8 0.1
 
-            texture_unit
+            /*texture_unit
             {
                 texture checker.png
                 env_map spherical
-            }
+            }*/
         }
     }
 }

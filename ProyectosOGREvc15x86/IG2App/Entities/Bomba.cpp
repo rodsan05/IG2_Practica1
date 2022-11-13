@@ -2,27 +2,29 @@
 
 Bomba::Bomba(Ogre::SceneNode* node, float scale) : EntityIG(node)
 {
+	nodoBomba = mNode->createChildSceneNode();
+
 	auto ent = mSM->createEntity("Barrel.mesh");
 	ent->setMaterialName("Practica1/Checker");
 
-	mNode->attachObject(ent);
-	mNode->setScale(scale, scale, scale);
+	nodoBomba->attachObject(ent);
+	nodoBomba->setScale(scale, scale, scale);
 
-	mNode->setInitialState();
+	nodoBomba->setInitialState();
 
-	float longDesplazamiento = 3*scale;
+	float longDesplazamiento = 3 * scale;
 	float duracion = 16;
 
 	float angle = 45;
 
 	Ogre::Animation* animation = mSM->createAnimation("animVV", duracion);
 	Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0);
-	track->setAssociatedNode(mNode);
+	track->setAssociatedNode(nodoBomba);
 
 	Ogre::Vector3 keyframePos(0.0, 0.0, 0.0);
 	Ogre::Real durPaso = duracion / 4.0;
 
-	Ogre::Quaternion quat = Ogre::Quaternion(Ogre::Degree(angle*0), Ogre::Vector3(0, 1, 0));
+	Ogre::Quaternion quat = Ogre::Quaternion(Ogre::Degree(angle * 0), Ogre::Vector3(0, 1, 0));
 	Ogre::TransformKeyFrame* kf;
 	kf = track->createNodeKeyFrame(durPaso * 0);
 	kf->setTranslate(keyframePos);
@@ -55,6 +57,8 @@ Bomba::Bomba(Ogre::SceneNode* node, float scale) : EntityIG(node)
 	animationState = mSM->createAnimationState("animVV");
 	animationState->setLoop(true);
 	animationState->setEnabled(true);
+
+	myTimer = new Ogre::Timer();
 }
 
 Bomba::~Bomba()
@@ -63,5 +67,37 @@ Bomba::~Bomba()
 
 void Bomba::frameRendered(const Ogre::FrameEvent& evt)
 {
-	animationState->addTime(evt.timeSinceLastFrame);
+	if (!stopped && (!stopTimerActivated || myTimer->getMilliseconds() <= timeToStop))
+	{
+		animationState->addTime(evt.timeSinceLastFrame);
+	}
+}
+
+void Bomba::receiveEvent(EntityIG* entidad, MessageType message)
+{
+	if (message == bombExplode)
+		explode();
+}
+
+void Bomba::setStopTimer(float time)
+{
+	if (!stopTimerActivated)
+	{
+		stopTimerActivated = true;
+
+		timeToStop = time;
+		myTimer->reset();
+	}
+}
+
+void Bomba::explode()
+{
+	Ogre::ParticleSystem* pSys = mSM->createParticleSystem("psBombExplosion", "Practica1/Smoke");
+	pSys->setEmitting(true);
+	auto mPSNode = mNode->createChildSceneNode();
+	mPSNode->attachObject(pSys);
+
+	nodoBomba->setVisible(false);
+
+	stopped = true;
 }

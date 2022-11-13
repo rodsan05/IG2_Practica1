@@ -27,6 +27,11 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	else if (evt.keysym.sym == SDLK_t)
 	{
 		river->changeToRock();
+		bomba->setStopTimer(5000);
+	}
+	else if (evt.keysym.sym == SDLK_r)
+	{
+		avion->explode();
 	}
 
 	return true;
@@ -85,7 +90,7 @@ void IG2App::setupScene(void)
 
 	// and tell it to render into the main window
 	Viewport* vp = getRenderWindow()->addViewport(cam);
-	vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
+	vp->setBackgroundColour(Ogre::ColourValue(0.6, 0.7, 0.8));
 
 	//------------------------------------------------------------------------
 
@@ -128,7 +133,7 @@ void IG2App::setupScene(void)
 	sinbadBombScene = new Sinbad(mSinbadEscenaBomba, 20, 0, false);
 	sinbadBombScene->arma();
 	mSinbadEscenaBomba->translate(-2160.0f / 3, 1 + 5 * 20, 1600.0f / 3.35);
-	
+
 	auto posPlatRoja = planoRojo->getPosition();
 	sinbadBombScene->createRunningPlatformsAnim(posPlatRoja);
 
@@ -137,27 +142,63 @@ void IG2App::setupScene(void)
 	noria->translate(2160.0f / 3, 1, -1600.0f / 2);
 
 	float planeCircleRadius = 1000;
-	avion = sceneNode->createChildSceneNode();
-	Avion* a = new Avion(avion, 1, planeCircleRadius);
-	avion->translate(0, 1250, 0);
-	addInputListener(a);
+	avionNode = sceneNode->createChildSceneNode();
+	avion = new Avion(avionNode, 1, planeCircleRadius);
+	avionNode->translate(0, 1250, 0);
+	addInputListener(avion);
+	avion->addListener(sinbadBombScene);
 
-	bomba = sceneNode->createChildSceneNode();
-	Bomba* bomb = new Bomba(bomba, 20);
+	bombaNode = sceneNode->createChildSceneNode();
+	bomba = new Bomba(bombaNode, 20);
+	sinbadBombScene->addListener(bomba);
 
-	muñeco = sceneNode->createChildSceneNode();
-	Muñeco* m = new Muñeco(muñeco);
+	munecoNode = sceneNode->createChildSceneNode();
+	muneco = new Muñeco(munecoNode);
 
-	muñeco->translate(2160/2.5, 100, -300);
-	muñeco->setScale(0.5 * Vector3(1));
-	m->createAnim();
+	munecoNode->translate(2160 / 2.5, 100, -300);
+	munecoNode->setScale(0.5 * Vector3(1));
+	muneco->createAnim();
 
 	addInputListener(n);
-	addInputListener(m);
+	addInputListener(muneco);
 	addInputListener(river);
-	addInputListener(bomb);
+	addInputListener(bomba);
 	addInputListener(sinbadBombScene);
 
+	//nubes
+	BillboardSet* bbSet = mSM->createBillboardSet("bsNubes", 20);
+	bbSet->setDefaultDimensions(1000, 1000);
+	bbSet->setMaterialName("Practica1/WhiteSmoke");
+
+	auto bbNode = sceneNode->createChildSceneNode();
+	bbNode->attachObject(bbSet);
+	bbNode->translate(0, 200, 0);
+
+	bbSet->createBillboard(Vector3(300, 700, 0));
+	bbSet->createBillboard(Vector3(300, 400, 0));
+	bbSet->createBillboard(Vector3(300, 100, 0));
+
+	bbSet->createBillboard(Vector3(600, 900, 100));
+	bbSet->createBillboard(Vector3(600, 600, 100));
+	bbSet->createBillboard(Vector3(600, 300, 100));
+	bbSet->createBillboard(Vector3(600, 0, 100));
+	
+	bbSet->createBillboard(Vector3(900, 900, 200));
+	bbSet->createBillboard(Vector3(900, 600, 200));
+	bbSet->createBillboard(Vector3(900, 300, 200));
+	bbSet->createBillboard(Vector3(900, 0, 200));
+	
+	bbSet->createBillboard(Vector3(1200, 900, 300));
+	bbSet->createBillboard(Vector3(1200, 600, 300));
+	bbSet->createBillboard(Vector3(1200, 300, 300));
+	bbSet->createBillboard(Vector3(1200, 0, 300));
+
+	bbSet->createBillboard(Vector3(1500, 700, 400));
+	bbSet->createBillboard(Vector3(1500, 400, 400));
+	bbSet->createBillboard(Vector3(1500, 100, 400));
+
+
+	//--------------------------------------------------------
 	//Escena Avion
 	float planetScale = 3;
 	Entity* planet = mSM->createEntity("sphere.mesh");
@@ -173,36 +214,6 @@ void IG2App::setupScene(void)
 
 	sinbad = new Sinbad(mSinbadNode, 10, 100 * planetScale + 5 * 10, true);
 	addInputListener(sinbad);
-
-	/*avion = avionSceneNode->createChildSceneNode();
-	Avion* a = new Avion(avion, 0.2, 100 * planetScale + 100 * 0.2);
-	addInputListener(a);
-
-	dronNodriza = avionSceneNode->createChildSceneNode();
-	dronNod = new Dron(dronNodriza, 3, 0.25, 100 * planetScale + 0.35 * 100 * 0.25, true);
-	addInputListener(dronNod);
-
-	dronNodriza->roll(Ogre::Degree(90));
-	dronNodriza->pitch(Ogre::Degree(45));
-
-	int angle = 0;
-	int angle2 = 0;
-	for (int i = 0; i < 200; i++)
-	{
-		angle = rand() % 360;
-		angle2 = rand() % 360;
-
-		Ogre::SceneNode* dronAvispa = avionSceneNode->createChildSceneNode();
-		Dron* dA = new Dron(dronAvispa, 3, 0.1, 100 * planetScale + 0.35 * 100 * 0.25, false);
-		addInputListener(dA);
-
-		dir inicial
-		dronAvispa->roll(Ogre::Degree(angle));
-		pos inicial
-		dronAvispa->pitch(Ogre::Degree(angle2));
-
-		drones.push_back(dronAvispa);
-	}*/
 
 	avionSceneNode->setVisible(false);
 

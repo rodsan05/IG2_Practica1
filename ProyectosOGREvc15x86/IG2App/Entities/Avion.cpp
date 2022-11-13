@@ -3,8 +3,25 @@
 
 Avion::Avion(Ogre::SceneNode* node, float scale, float offsetNodoFict) : EntityIG(node)
 {
-	nodoAvion = mNode->createChildSceneNode();
+	nodoAvionParticulas = mNode->createChildSceneNode();
+	nodoAvion = nodoAvionParticulas->createChildSceneNode();
 
+	//Billboard
+	Ogre::BillboardSet* bbSet = mSM->createBillboardSet("10pointsPlane", 1);
+	bbSet->setDefaultDimensions(70 * scale, 50 * scale);
+	bbSet->setMaterialName("Practica1/10points");
+
+	auto nodoBB = nodoAvion->createChildSceneNode();
+	nodoBB->attachObject(bbSet);
+	bbSet->createBillboard(0, 0, -150 * scale);
+
+	//ParticleSystem
+	Ogre::ParticleSystem* pSys = mSM->createParticleSystem("psSmoke", "Practica1/SmokePlane");
+	pSys->setEmitting(true);
+	auto mPSNode = nodoAvionParticulas->createChildSceneNode();
+	mPSNode->attachObject(pSys);
+
+	//entidades
 	Ogre::Entity* sphere = mSM->createEntity("sphere.mesh");
 	sphere->setMaterialName("Practica1/Rojo");
 
@@ -54,8 +71,10 @@ Avion::Avion(Ogre::SceneNode* node, float scale, float offsetNodoFict) : EntityI
 	ninja->yaw(Ogre::Degree(180));
 	ninja->translate(0, scale * 30 / 2, 0);
 
-	nodoAvion->translate(-offsetNodoFict, 0, 0);
-	nodoAvion->roll(Ogre::Degree(-15));
+	nodoAvionParticulas->translate(-offsetNodoFict, 0, 0);
+	nodoAvionParticulas->roll(Ogre::Degree(-15));
+
+	myTimer = new Ogre::Timer();
 }
 
 Avion::~Avion()
@@ -66,7 +85,31 @@ void Avion::frameRendered(const Ogre::FrameEvent& evt)
 {
 	float angle = 20;
 
-	mNode->yaw(Ogre::Degree(angle * evt.timeSinceLastFrame));
-	aspaL->rotate();
-	aspaR->rotate();
+	if (!stopped)
+	{
+		mNode->yaw(Ogre::Degree(angle * evt.timeSinceLastFrame));
+		aspaL->rotate();
+		aspaR->rotate();
+	}
+	else
+	{
+		if (myTimer->getMilliseconds() > 5000)
+		{
+			mNode->setVisible(false);
+		}
+	}
+}
+
+void Avion::explode()
+{
+	Ogre::ParticleSystem* pSys = mSM->createParticleSystem("psPlaneExplosion", "Practica1/SmokePlaneExplosion");
+	pSys->setEmitting(true);
+	auto mPSNode = nodoAvionParticulas->createChildSceneNode();
+	mPSNode->attachObject(pSys);
+
+	nodoAvion->setVisible(false);
+
+	stopped = true;
+
+	sendEvent(this, sinbadDie);
 }

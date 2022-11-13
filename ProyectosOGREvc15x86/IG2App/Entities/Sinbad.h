@@ -15,9 +15,13 @@ public:
 	virtual void frameRendered(const Ogre::FrameEvent& evt) override;
 	virtual bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
 
+	void receiveEvent(EntityIG* entidad, MessageType message) override;
+
 	void arma();
 	void arma(bool manoDerecha);
 	void cambiaArma();
+
+	void die();
 
 	void toggleDancing();
 
@@ -28,6 +32,8 @@ protected:
 	const float ROTATION_VEL = 50;
 	const float MOVEMENT_VEL = 50;
 
+	Ogre::AnimationState* mAnimStateBaseIdle = nullptr;
+	Ogre::AnimationState* mAnimStateTopIdle = nullptr;
 	Ogre::AnimationState* mAnimStateBase = nullptr;
 	Ogre::AnimationState* mAnimStateTop = nullptr;
 	Ogre::AnimationState* danceState = nullptr;
@@ -43,7 +49,11 @@ protected:
 	bool rotating = false;
 	bool dancing = false;
 	bool runningAroundPlanet = false;
+	bool dead = false;
+	bool eventSent = false;
 	int dir = 1;
 	int randomWaitTime = 1000;
+
+	float offset = 0;
 };
 

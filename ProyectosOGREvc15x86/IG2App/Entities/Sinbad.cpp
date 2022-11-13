@@ -11,10 +11,14 @@ Sinbad::Sinbad(Ogre::SceneNode* node, float scale, float offsetNodoFict, bool ru
 	sinbadEntity = mSM->createEntity("Sinbad.mesh");
 	sinbadNode->attachObject(sinbadEntity);
 
+	mAnimStateBaseIdle = sinbadEntity->getAnimationState("IdleBase");
+	mAnimStateTopIdle = sinbadEntity->getAnimationState("IdleTop");
 	mAnimStateBase = sinbadEntity->getAnimationState("RunBase");
 	mAnimStateTop = sinbadEntity->getAnimationState("RunTop");
 	danceState = sinbadEntity->getAnimationState("Dance");
 
+	mAnimStateBaseIdle->setEnabled(false);
+	mAnimStateTopIdle->setEnabled(false);
 	mAnimStateBase->setEnabled(true);
 	mAnimStateBase->setLoop(true);
 	mAnimStateTop->setEnabled(true);
@@ -23,6 +27,7 @@ Sinbad::Sinbad(Ogre::SceneNode* node, float scale, float offsetNodoFict, bool ru
 	danceState->setLoop(true);
 
 	sinbadNode->setScale(scale, scale, scale);
+	offset = offsetNodoFict;
 	sinbadNode->translate({ 0, offsetNodoFict, 0 });
 
 	Ogre::AnimationStateSet* aux = sinbadEntity->getAllAnimationStates();
@@ -46,46 +51,55 @@ void Sinbad::frameRendered(const Ogre::FrameEvent& evt)
 	mAnimStateTop->addTime(evt.timeSinceLastFrame);
 	danceState->addTime(evt.timeSinceLastFrame);
 	
-	if (!runningAroundPlanet) 
+	if (!dead)
 	{
-		runBetweenPlatformsAnimationState->addTime(evt.timeSinceLastFrame);
+		if (!runningAroundPlanet)
+		{
+			runBetweenPlatformsAnimationState->addTime(evt.timeSinceLastFrame);
+		}
+
+		Ogre::Real time = evt.timeSinceLastFrame;
+
+		if (!dancing && runningAroundPlanet)
+		{
+			if (rand() % 1 == 0)
+			{
+				dir = -1;
+			}
+			else dir = 1;
+
+			if (!rotating)
+			{
+				mNode->pitch(Ogre::Degree(MOVEMENT_VEL * time));
+
+				if (myTimer->getMilliseconds() >= 2000)
+				{
+					rotating = true;
+
+					randomWaitTime = rand() % 2000;
+
+					myTimer->reset();
+				}
+			}
+
+			else
+			{
+				mNode->yaw(Ogre::Degree(ROTATION_VEL * time * dir));
+
+				if (myTimer->getMilliseconds() > randomWaitTime)
+				{
+					rotating = false;
+
+					myTimer->reset();
+				}
+			}
+		}
 	}
-
-	Ogre::Real time = evt.timeSinceLastFrame;
-
-	if (!dancing && runningAroundPlanet)
+	
+	else if (!eventSent && myTimer->getMilliseconds() >= 5000)
 	{
-		if (rand() % 1 == 0)
-		{
-			dir = -1;
-		}
-		else dir = 1;
-
-		if (!rotating)
-		{
-			mNode->pitch(Ogre::Degree(MOVEMENT_VEL * time));
-
-			if (myTimer->getMilliseconds() >= 2000)
-			{
-				rotating = true;
-
-				randomWaitTime = rand() % 2000;
-
-				myTimer->reset();
-			}
-		}
-
-		else
-		{
-			mNode->yaw(Ogre::Degree(ROTATION_VEL * time * dir));
-
-			if (myTimer->getMilliseconds() > randomWaitTime)
-			{
-				rotating = false;
-
-				myTimer->reset();
-			}
-		}
+		sendEvent(this, bombExplode);
+		eventSent = true;
 	}
 }
 
@@ -113,6 +127,12 @@ bool Sinbad::keyPressed(const OgreBites::KeyboardEvent& evt)
 	}
 
 	return true;
+}
+
+void Sinbad::receiveEvent(EntityIG* entidad, MessageType message)
+{
+	if (!dead && message == sinbadDie)
+		die();
 }
 
 void Sinbad::arma()
@@ -146,6 +166,22 @@ void Sinbad::cambiaArma()
 		sinbadEntity->detachObjectFromBone(swordR);
 		sinbadEntity->attachObjectToBone("Handle.L", swordL);
 	}
+}
+
+void Sinbad::die()
+{
+	dead = true;
+	myTimer->reset();
+
+	sinbadNode->pitch(Ogre::Degree(-90));
+	sinbadNode->translate(0, -4 * 20, 0 );
+
+	mAnimStateBaseIdle->setEnabled(true);
+	mAnimStateTopIdle->setEnabled(true);
+
+	mAnimStateBase->setEnabled(false);
+	mAnimStateTop->setEnabled(false);
+	danceState->setEnabled(false);
 }
 
 void Sinbad::toggleDancing()

@@ -4,6 +4,8 @@
 
 class EntityIG : public OgreBites::InputListener { //#include <OgreInput.h>
 public:
+	enum MessageType { sinbadDie, bombExplode };
+
 	EntityIG(Ogre::SceneNode* node); // #include <OgreSceneNode.h>
 	~EntityIG();
 
@@ -30,5 +32,7 @@ protected:
 	virtual bool mouseWheelRolled(const OgreBites::MouseWheelEvent& evt);
 
 	void sendEvent(EntityIG* entidad);
+	void sendEvent(EntityIG* entidad, MessageType message);
 	virtual void receiveEvent(EntityIG* entidad) {};
+	virtual void receiveEvent(EntityIG* entidad, MessageType message) {};
 };

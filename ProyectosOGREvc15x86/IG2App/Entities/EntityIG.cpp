@@ -55,3 +55,9 @@ void EntityIG::sendEvent(EntityIG* entidad)
 	for (EntityIG* e : appListeners)
 		e->receiveEvent(this);
 }
+
+void EntityIG::sendEvent(EntityIG* entidad, MessageType message)
+{
+	for (EntityIG* e : appListeners)
+		e->receiveEvent(this, message);
+}

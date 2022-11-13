@@ -14,7 +14,10 @@
 #include <OgreParticleSystem.h>
 
 class Plano;
+class Muñeco;
+class Bomba;
 class Sinbad;
+class Avion;
 class IG2App : public  OgreBites::IG2ApplicationContext, OgreBites::InputListener
 {
 public:
@@ -44,18 +47,21 @@ protected:
 	Ogre::SceneNode* planoRojo = nullptr;
 	Ogre::SceneNode* planoAmarillo = nullptr;
 
-	Ogre::SceneNode* bomba = nullptr;
-	Ogre::SceneNode* muñeco = nullptr;
+	Ogre::SceneNode* bombaNode = nullptr;
+	Ogre::SceneNode* munecoNode = nullptr;
 
 	Ogre::SceneNode* avionSceneNode = nullptr;
 
-	Ogre::SceneNode* avion = nullptr;
+	Ogre::SceneNode* avionNode = nullptr;
 	Ogre::SceneNode* dronNodriza = nullptr;
 	std::vector<Ogre::SceneNode*> drones;
 	Ogre::SceneNode* planeta = nullptr;
 	Sinbad* sinbad = nullptr;
 	Sinbad* sinbadBombScene = nullptr;
 	Plano* river = nullptr;
+	Muñeco* muneco = nullptr;
+	Bomba* bomba = nullptr;
+	Avion* avion = nullptr;
 };
 
 #endif

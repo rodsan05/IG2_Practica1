@@ -1,0 +1,60 @@
+vertex_program MyFirstShaderVS glsl
+{
+    source MyFirstShaderVS.glsl
+    
+    default_params
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+    }
+}
+
+fragment_program MyFirstShaderFS glsl
+{
+    source MyFirstShaderFS.glsl
+    default_params
+    {
+    }
+}
+
+material Practica2/Bomba
+{
+    technique 
+    {
+        pass 
+        {
+            vertex_program_ref MyFirstShaderVS
+            { // params ‐> default_params
+            }
+            fragment_program_ref MyFirstShaderFS
+            { // params ‐> default_params
+            }
+        }
+    }
+}
+
+material IG2/ejemplo2GLSL 
+{
+    technique 
+    {
+        pass 
+        {
+            vertex_program_ref Ejemplo2VS
+            { // params ‐> default_params
+            }
+            fragment_program_ref Ejemplo2FS
+            { // params ‐> default_params
+            }
+            texture_unit 
+            { // * ‐> int 0
+                texture ejemploA.jpg 2d 
+                tex_address_mode clamp 
+                filtering bilinear            
+            }
+            texture_unit 
+            { // * ‐> int 1
+                texture ejemploB.jpg 2d
+                tex_address_mode wrap 
+            } // de acceso al texel
+        } 
+    } 
+}

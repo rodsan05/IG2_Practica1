@@ -113,14 +113,11 @@ void IG2App::setupScene(void)
 
 	// finally something to render
 
-	//mSinbadNode->setPosition(400, 100, -300);
-	//mSinbadNode->yaw(Ogre::Degree(-45));
-	//mSinbadNode->showBoundingBox(true);
-
 	rio = sceneNode->createChildSceneNode();
 	river = new Plano(rio, 2160.0f * 1.5, 1600.0f, "Practica1/Rio");
 
 	planoRojo = sceneNode->createChildSceneNode();
+	planoRojo->setVisible(false);
 	Plano* planoRoj = new Plano(planoRojo, 2160.0f / 3, 1600.0f / 2.5, "Practica1/Rojo");
 
 	planoAmarillo = sceneNode->createChildSceneNode();
@@ -149,7 +146,7 @@ void IG2App::setupScene(void)
 	avion->addListener(sinbadBombScene);
 
 	bombaNode = sceneNode->createChildSceneNode();
-	bomba = new Bomba(bombaNode, 20);
+	bomba = new Bomba(bombaNode, 0.5);
 	sinbadBombScene->addListener(bomba);
 
 	munecoNode = sceneNode->createChildSceneNode();
@@ -159,65 +156,13 @@ void IG2App::setupScene(void)
 	munecoNode->setScale(0.5 * Vector3(1));
 	muneco->createAnim();
 
+	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "Practica2/Space", 1, 1, true, 1.0, 100, 100);
+
 	addInputListener(n);
 	addInputListener(muneco);
 	addInputListener(river);
 	addInputListener(bomba);
 	addInputListener(sinbadBombScene);
-
-	//nubes
-	BillboardSet* bbSet = mSM->createBillboardSet("bsNubes", 20);
-	bbSet->setDefaultDimensions(1000, 1000);
-	bbSet->setMaterialName("Practica1/WhiteSmoke");
-
-	auto bbNode = sceneNode->createChildSceneNode();
-	bbNode->attachObject(bbSet);
-	bbNode->translate(0, 200, 0);
-
-	bbSet->createBillboard(Vector3(300, 700, 0));
-	bbSet->createBillboard(Vector3(300, 400, 0));
-	bbSet->createBillboard(Vector3(300, 100, 0));
-
-	bbSet->createBillboard(Vector3(600, 900, 100));
-	bbSet->createBillboard(Vector3(600, 600, 100));
-	bbSet->createBillboard(Vector3(600, 300, 100));
-	bbSet->createBillboard(Vector3(600, 0, 100));
-	
-	bbSet->createBillboard(Vector3(900, 900, 200));
-	bbSet->createBillboard(Vector3(900, 600, 200));
-	bbSet->createBillboard(Vector3(900, 300, 200));
-	bbSet->createBillboard(Vector3(900, 0, 200));
-	
-	bbSet->createBillboard(Vector3(1200, 900, 300));
-	bbSet->createBillboard(Vector3(1200, 600, 300));
-	bbSet->createBillboard(Vector3(1200, 300, 300));
-	bbSet->createBillboard(Vector3(1200, 0, 300));
-
-	bbSet->createBillboard(Vector3(1500, 700, 400));
-	bbSet->createBillboard(Vector3(1500, 400, 400));
-	bbSet->createBillboard(Vector3(1500, 100, 400));
-
-
-	//--------------------------------------------------------
-	//Escena Avion
-	float planetScale = 3;
-	Entity* planet = mSM->createEntity("sphere.mesh");
-	planet->setMaterialName("Practica1/Cian");
-
-	avionSceneNode = mSM->getRootSceneNode()->createChildSceneNode();
-
-	planeta = avionSceneNode->createChildSceneNode();
-	planeta->attachObject(planet);
-	planeta->scale(planetScale * Vector3(1));
-
-	mSinbadNode = avionSceneNode->createChildSceneNode("nSinbad");
-
-	sinbad = new Sinbad(mSinbadNode, 10, 100 * planetScale + 5 * 10, true);
-	addInputListener(sinbad);
-
-	avionSceneNode->setVisible(false);
-
-
 
 	//------------------------------------------------------------------------
 

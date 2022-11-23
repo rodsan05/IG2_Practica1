@@ -4,15 +4,15 @@ Bomba::Bomba(Ogre::SceneNode* node, float scale) : EntityIG(node)
 {
 	nodoBomba = mNode->createChildSceneNode();
 
-	auto ent = mSM->createEntity("Barrel.mesh");
-	ent->setMaterialName("Practica1/Checker");
+	auto ent = mSM->createEntity("uv_sphere.mesh");
+	ent->setMaterialName("Practica2/Bomba");
 
 	nodoBomba->attachObject(ent);
 	nodoBomba->setScale(scale, scale, scale);
 
 	nodoBomba->setInitialState();
 
-	float longDesplazamiento = 3 * scale;
+	float longDesplazamiento = 100 * scale;
 	float duracion = 16;
 
 	float angle = 45;

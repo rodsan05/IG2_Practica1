@@ -32,6 +32,105 @@ material Practica2/Bomba
     }
 }
 
+vertex_program SpaceSkyVS glsl
+{
+    source SpaceSkyVS.glsl
+    
+    default_params
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+    }
+}
+
+fragment_program SpaceSkyFS glsl
+{
+    source SpaceSkyFS.glsl
+    default_params
+    {
+        param_named lightMap int 0
+        param_named spaceSky int 1
+    }
+}
+
+material Practica2/SpaceSkyGLSL
+{
+    technique 
+    {
+        pass 
+        {
+            
+            vertex_program_ref SpaceSkyVS
+            { // params ‐> default_params
+            }
+            fragment_program_ref SpaceSkyFS
+            { // params ‐> default_params
+            }
+
+            texture_unit 
+            { // * ‐> int 0
+                texture lightMap.jpg 2d    
+                tex_address_mode wrap 
+            }
+            texture_unit 
+            { // * ‐> int 1
+                texture spaceSky.jpg 2d
+                tex_address_mode wrap 
+            } // de acceso al texel
+        } 
+    } 
+}
+
+vertex_program BombaTeseladaVS glsl
+{
+    source BombaTeseladaVS.glsl
+    
+    default_params
+    {
+        param_named_auto modelViewProjMat worldviewproj_matrix
+    }
+}
+
+fragment_program BombaTeseladaFS glsl
+{
+    source BombaTeseladaFS.glsl
+    default_params
+    {
+        param_named checker int 0
+        param_named bumpyMetal int 1
+        param_named spaceSky int 2
+    }
+}
+
+material Practica2/BombaTeselada
+{
+    technique 
+    {
+        pass 
+        {
+            lighting off
+            vertex_program_ref BombaTeseladaVS
+            { // params ‐> default_params
+            }
+            fragment_program_ref BombaTeseladaFS
+            { // params ‐> default_params
+            }
+
+            texture_unit 
+            {
+                texture checker.png 2d    
+            }
+            texture_unit 
+            {
+                texture BumpyMetal.jpg 2d    
+            }
+            texture_unit 
+            {
+                texture spaceSky.jpg 2d
+            }
+        } 
+    } 
+}
+
 material IG2/ejemplo2GLSL 
 {
     technique 

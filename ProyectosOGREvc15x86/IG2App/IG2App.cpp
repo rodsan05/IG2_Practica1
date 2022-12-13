@@ -146,6 +146,7 @@ void IG2App::setupScene(void)
 	avion->addListener(sinbadBombScene);
 
 	bombaNode = sceneNode->createChildSceneNode();
+	bombaNode->translate(0, 100	, 0);
 	bomba = new Bomba(bombaNode, 0.5);
 	sinbadBombScene->addListener(bomba);
 

@@ -4,8 +4,25 @@ Bomba::Bomba(Ogre::SceneNode* node, float scale) : EntityIG(node)
 {
 	nodoBomba = mNode->createChildSceneNode();
 
-	auto ent = mSM->createEntity("uv_sphere.mesh");
-	ent->setMaterialName("Practica2/SpotLight");
+	ent = mSM->createEntity("uv_sphere.mesh");
+
+	//bomba naranja
+	ent->setMaterialName("Practica2/Bomba");
+
+	////bomba teselada
+	//ent->setMaterialName("Practica2/BombaTeselada");
+	//
+	////agujeros sin luz
+	//ent->setMaterialName("Practica2/Holes");
+	//
+	////agujeros con luz en el VS
+	//ent->setMaterialName("Practica2/HolesAndVertexLighting");
+	//
+	////agujeros con la luz en el FS
+	//ent->setMaterialName("Practica2/HolesAndLighting");
+	//
+	////spotlight
+	//ent->setMaterialName("Practica2/SpotLight");
 
 	nodoBomba->attachObject(ent);
 	nodoBomba->setScale(scale, scale, scale);
@@ -88,6 +105,11 @@ void Bomba::setStopTimer(float time)
 		timeToStop = time;
 		myTimer->reset();
 	}
+}
+
+void Bomba::setMaterial(Ogre::String name)
+{
+	ent->setMaterialName(name);
 }
 
 void Bomba::explode()

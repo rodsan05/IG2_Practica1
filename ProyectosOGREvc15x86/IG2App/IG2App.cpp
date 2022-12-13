@@ -33,6 +33,30 @@ bool IG2App::keyPressed(const OgreBites::KeyboardEvent& evt)
 	{
 		avion->explode();
 	}
+	else if (evt.keysym.sym == SDLK_1) 
+	{
+		bomba->setMaterial("Practica2/Bomba");
+	}
+	else if (evt.keysym.sym == SDLK_2)
+	{
+		bomba->setMaterial("Practica2/BombaTeselada");
+	}
+	else if (evt.keysym.sym == SDLK_3)
+	{
+		bomba->setMaterial("Practica2/Holes");
+	}
+	else if (evt.keysym.sym == SDLK_4)
+	{
+		bomba->setMaterial("Practica2/HolesAndVertexLighting");
+	}
+	else if (evt.keysym.sym == SDLK_5)
+	{
+		bomba->setMaterial("Practica2/HolesAndLighting");
+	}
+	else if (evt.keysym.sym == SDLK_6)
+	{
+		bomba->setMaterial("Practica2/SpotLight");
+	}
 
 	return true;
 }

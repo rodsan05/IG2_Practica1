@@ -15,11 +15,15 @@ public:
 
 	void setStopTimer(float time);
 
+	void setMaterial(Ogre::String name);
+
 	void explode();
 
 protected:
 
 	Ogre::AnimationState* animationState = nullptr;
+
+	Ogre::Entity* ent;
 
 	Ogre::SceneNode* nodoBomba = nullptr;
 

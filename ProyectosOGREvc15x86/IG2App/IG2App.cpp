@@ -156,7 +156,7 @@ void IG2App::setupScene(void)
 	munecoNode->setScale(0.5 * Vector3(1));
 	muneco->createAnim();
 
-	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "Practica2/SpaceSkyGLSL", 1, 1, true, 1.0, 100, 100);
+	mSM->setSkyPlane(true, Plane(Vector3::UNIT_Z, -20), "Practica2/SpaceGLSL", 1, 1, true, 1.0, 100, 100);
 
 	addInputListener(n);
 	addInputListener(muneco);

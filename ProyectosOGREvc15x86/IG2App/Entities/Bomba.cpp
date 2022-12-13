@@ -5,7 +5,7 @@ Bomba::Bomba(Ogre::SceneNode* node, float scale) : EntityIG(node)
 	nodoBomba = mNode->createChildSceneNode();
 
 	auto ent = mSM->createEntity("uv_sphere.mesh");
-	ent->setMaterialName("Practica2/BombaTeselada");
+	ent->setMaterialName("Practica2/HolesAndVertexLighting");
 
 	nodoBomba->attachObject(ent);
 	nodoBomba->setScale(scale, scale, scale);
